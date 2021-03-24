@@ -35,9 +35,18 @@ class LocalPalCommunicator : NSObject, ObservableObject {
     }
     
     func broadcastPacket(packet: Packet) throws {
+        try broadcastPacket(packet: packet, exclude: nil)
+    }
+    
+    func broadcastPacket(packet: Packet, exclude excludedPeerID: MCPeerID?) throws {
         if let sess = session {
+            var to = sess.connectedPeers
+            if let peerId = excludedPeerID {
+                to.removeAll { (p) -> Bool in p == peerId }
+            }
+            
             let data = try JSONEncoder().encode(PacketContainer(pack: packet))
-            try sess.send(data, toPeers: sess.connectedPeers, with: .reliable)
+            try sess.send(data, toPeers: to, with: .reliable)
         }
     }
 }
@@ -49,18 +58,17 @@ extension LocalPalCommunicator : MCSessionDelegate {
         DispatchQueue.main.async {
             if state == MCSessionState.connected {
                 self.connected = true
-            }
-            DispatchQueue.global().async {
-                do {
-                    try self.broadcastPacket(packet: UserJoinPacket(user: User(name: "Duc", uuid: UUID.init())))
-                    try self.broadcastPacket(packet: PropagateConnectedUsersPacket())
-                    try self.broadcastPacket(packet: BroadcastMessagePacket(message: Message(from: User(name: "Duc", uuid: UUID.init()), text: "😏")))
-                } catch let e {
-                    NSLog("%@", "error sending packet: \(e)")
+                NSLog("%@", "Connected")
+                DispatchQueue.global().async {
+                    do {
+                        try self.broadcastPacket(packet: UserJoinPacket(user: User(name: "Duc", uuid: UUID.init())))
+                        try self.broadcastPacket(packet: PropagateConnectedUsersPacket())
+                        try self.broadcastPacket(packet: BroadcastMessagePacket(message: Message(from: User(name: "Duc", uuid: UUID.init()), text: "😏")))
+                    } catch let e {
+                        NSLog("%@", "error sending packet: \(e)")
+                    }
                 }
-
             }
-            NSLog("%@", "Connected")
         }
     }
 

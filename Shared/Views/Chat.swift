@@ -11,19 +11,20 @@ struct Chat: View {
     let connector: LocalPalConnector?
     let foundRoom: FoundRoom?
     
-    @StateObject var communicator : LocalPalCommunicator = LocalPalCommunicator()
+    @StateObject var chatManager = LocalPalChatManager()
     @State private var chatInput: String = ""
+    
     
     var body: some View {
         VStack {
-            if !communicator.connected {
+            if !chatManager.router.comm.connected {
                 ProgressView().padding()
                 Text("Connecting")
             } else {
                 ScrollView() {
-                    Text("Hi")
-                        .frame(maxWidth: .infinity)
-                        .multilineTextAlignment(.leading)
+                    ForEach(self.chatManager.messages) { messageView in
+                        messageView
+                    }
                 }.frame(maxWidth: .infinity)
                 Spacer()
                 HStack {
@@ -38,9 +39,10 @@ struct Chat: View {
         .navigationTitle("Local Pal Chat")
         .onAppear {
             if connector != nil {
-                connector!.connect(room: foundRoom!, comm: communicator)
+                connector!.connect(room: foundRoom!, comm: chatManager.router.comm)
+                
             } else {
-                communicator.create()
+                chatManager.router.comm.create()
             }
         }
     }
@@ -48,6 +50,7 @@ struct Chat: View {
     init(connector: LocalPalConnector, foundRoom: FoundRoom) {
         self.connector = connector
         self.foundRoom = foundRoom
+        
     }
     
     init() {

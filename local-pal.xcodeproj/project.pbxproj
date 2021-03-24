@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A309AA79260BBD6000F3C79D /* ChatManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A309AA78260BBD6000F3C79D /* ChatManager.swift */; };
+		A309AA7A260BBD6000F3C79D /* ChatManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A309AA78260BBD6000F3C79D /* ChatManager.swift */; };
+		A309AA7E260BBE8000F3C79D /* Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = A309AA7D260BBE8000F3C79D /* Messages.swift */; };
+		A309AA7F260BBE8000F3C79D /* Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = A309AA7D260BBE8000F3C79D /* Messages.swift */; };
 		A39D02D325FFD83B00E40663 /* local_palApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39D02C025FFD83900E40663 /* local_palApp.swift */; };
 		A39D02D425FFD83B00E40663 /* local_palApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39D02C025FFD83900E40663 /* local_palApp.swift */; };
 		A39D02D525FFD83B00E40663 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39D02C125FFD83900E40663 /* ContentView.swift */; };
@@ -29,9 +33,13 @@
 		A39EFEFD2601191500E15EB9 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39EFEFB2601191500E15EB9 /* Message.swift */; };
 		A39EFF0326011B2900E15EB9 /* Packet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39EFF0226011B2900E15EB9 /* Packet.swift */; };
 		A39EFF0426011B2900E15EB9 /* Packet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39EFF0226011B2900E15EB9 /* Packet.swift */; };
+		A3C53453260BB5AA006EE226 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3C53452260BB5AA006EE226 /* Router.swift */; };
+		A3C53454260BB5AA006EE226 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3C53452260BB5AA006EE226 /* Router.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A309AA78260BBD6000F3C79D /* ChatManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatManager.swift; sourceTree = "<group>"; };
+		A309AA7D260BBE8000F3C79D /* Messages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Messages.swift; sourceTree = "<group>"; };
 		A39D02C025FFD83900E40663 /* local_palApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = local_palApp.swift; sourceTree = "<group>"; };
 		A39D02C125FFD83900E40663 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A39D02C225FFD83B00E40663 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -49,6 +57,7 @@
 		A39D030826000C4C00E40663 /* local-palDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "local-palDebug.entitlements"; sourceTree = "<group>"; };
 		A39EFEFB2601191500E15EB9 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		A39EFF0226011B2900E15EB9 /* Packet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Packet.swift; sourceTree = "<group>"; };
+		A3C53452260BB5AA006EE226 /* Router.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +134,7 @@
 				A39D02E325FFDB9D00E40663 /* MainMenu.swift */,
 				A39D02F725FFF1DC00E40663 /* FindRoom.swift */,
 				A39D02FC25FFFD7800E40663 /* Chat.swift */,
+				A309AA7D260BBE8000F3C79D /* Messages.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -135,6 +145,8 @@
 				A39D02EB25FFDEF100E40663 /* Service.swift */,
 				A39D02F225FFE4A900E40663 /* Connector.swift */,
 				A39D030125FFFDB000E40663 /* Communicator.swift */,
+				A3C53452260BB5AA006EE226 /* Router.swift */,
+				A309AA78260BBD6000F3C79D /* ChatManager.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -245,10 +257,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A3C53453260BB5AA006EE226 /* Router.swift in Sources */,
 				A39D02D525FFD83B00E40663 /* ContentView.swift in Sources */,
 				A39D02E425FFDB9D00E40663 /* MainMenu.swift in Sources */,
+				A309AA79260BBD6000F3C79D /* ChatManager.swift in Sources */,
 				A39D02FD25FFFD7800E40663 /* Chat.swift in Sources */,
 				A39EFEFC2601191500E15EB9 /* Message.swift in Sources */,
+				A309AA7E260BBE8000F3C79D /* Messages.swift in Sources */,
 				A39D02EC25FFDEF100E40663 /* Service.swift in Sources */,
 				A39D02F325FFE4A900E40663 /* Connector.swift in Sources */,
 				A39D02D325FFD83B00E40663 /* local_palApp.swift in Sources */,
@@ -262,10 +277,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A3C53454260BB5AA006EE226 /* Router.swift in Sources */,
 				A39D02D625FFD83B00E40663 /* ContentView.swift in Sources */,
 				A39D02E525FFDB9D00E40663 /* MainMenu.swift in Sources */,
+				A309AA7A260BBD6000F3C79D /* ChatManager.swift in Sources */,
 				A39D02FE25FFFD7800E40663 /* Chat.swift in Sources */,
 				A39EFEFD2601191500E15EB9 /* Message.swift in Sources */,
+				A309AA7F260BBE8000F3C79D /* Messages.swift in Sources */,
 				A39D02ED25FFDEF100E40663 /* Service.swift in Sources */,
 				A39D02F425FFE4A900E40663 /* Connector.swift in Sources */,
 				A39D02D425FFD83B00E40663 /* local_palApp.swift in Sources */,
