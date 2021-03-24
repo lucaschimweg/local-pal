@@ -22,5 +22,11 @@
 	<string>1</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Peer To Peer Communication</string>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_local-pal._tcp</string>
+	</array>
 </dict>
 </plist>

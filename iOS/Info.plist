@@ -46,5 +46,11 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Peer To Peer Communication</string>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_local-pal._tcp</string>
+	</array>
 </dict>
 </plist>

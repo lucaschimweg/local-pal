@@ -13,6 +13,22 @@
 		A39D02D625FFD83B00E40663 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39D02C125FFD83900E40663 /* ContentView.swift */; };
 		A39D02D725FFD83B00E40663 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A39D02C225FFD83B00E40663 /* Assets.xcassets */; };
 		A39D02D825FFD83B00E40663 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A39D02C225FFD83B00E40663 /* Assets.xcassets */; };
+		A39D02E425FFDB9D00E40663 /* MainMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39D02E325FFDB9D00E40663 /* MainMenu.swift */; };
+		A39D02E525FFDB9D00E40663 /* MainMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39D02E325FFDB9D00E40663 /* MainMenu.swift */; };
+		A39D02EC25FFDEF100E40663 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39D02EB25FFDEF100E40663 /* Service.swift */; };
+		A39D02ED25FFDEF100E40663 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39D02EB25FFDEF100E40663 /* Service.swift */; };
+		A39D02F325FFE4A900E40663 /* Connector.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39D02F225FFE4A900E40663 /* Connector.swift */; };
+		A39D02F425FFE4A900E40663 /* Connector.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39D02F225FFE4A900E40663 /* Connector.swift */; };
+		A39D02F825FFF1DC00E40663 /* FindRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39D02F725FFF1DC00E40663 /* FindRoom.swift */; };
+		A39D02F925FFF1DC00E40663 /* FindRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39D02F725FFF1DC00E40663 /* FindRoom.swift */; };
+		A39D02FD25FFFD7800E40663 /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39D02FC25FFFD7800E40663 /* Chat.swift */; };
+		A39D02FE25FFFD7800E40663 /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39D02FC25FFFD7800E40663 /* Chat.swift */; };
+		A39D030225FFFDB000E40663 /* Communicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39D030125FFFDB000E40663 /* Communicator.swift */; };
+		A39D030325FFFDB000E40663 /* Communicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39D030125FFFDB000E40663 /* Communicator.swift */; };
+		A39EFEFC2601191500E15EB9 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39EFEFB2601191500E15EB9 /* Message.swift */; };
+		A39EFEFD2601191500E15EB9 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39EFEFB2601191500E15EB9 /* Message.swift */; };
+		A39EFF0326011B2900E15EB9 /* Packet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39EFF0226011B2900E15EB9 /* Packet.swift */; };
+		A39EFF0426011B2900E15EB9 /* Packet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39EFF0226011B2900E15EB9 /* Packet.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +40,15 @@
 		A39D02CF25FFD83B00E40663 /* local-pal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "local-pal.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A39D02D125FFD83B00E40663 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A39D02D225FFD83B00E40663 /* macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = macOS.entitlements; sourceTree = "<group>"; };
+		A39D02E325FFDB9D00E40663 /* MainMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenu.swift; sourceTree = "<group>"; };
+		A39D02EB25FFDEF100E40663 /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
+		A39D02F225FFE4A900E40663 /* Connector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connector.swift; sourceTree = "<group>"; };
+		A39D02F725FFF1DC00E40663 /* FindRoom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindRoom.swift; sourceTree = "<group>"; };
+		A39D02FC25FFFD7800E40663 /* Chat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chat.swift; sourceTree = "<group>"; };
+		A39D030125FFFDB000E40663 /* Communicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Communicator.swift; sourceTree = "<group>"; };
+		A39D030826000C4C00E40663 /* local-palDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "local-palDebug.entitlements"; sourceTree = "<group>"; };
+		A39EFEFB2601191500E15EB9 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		A39EFF0226011B2900E15EB9 /* Packet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Packet.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +72,7 @@
 		A39D02BA25FFD83800E40663 = {
 			isa = PBXGroup;
 			children = (
+				A39D030826000C4C00E40663 /* local-palDebug.entitlements */,
 				A39D02BF25FFD83900E40663 /* Shared */,
 				A39D02C925FFD83B00E40663 /* iOS */,
 				A39D02D025FFD83B00E40663 /* macOS */,
@@ -57,6 +83,9 @@
 		A39D02BF25FFD83900E40663 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				A39EFEFA2601190500E15EB9 /* Model */,
+				A39D02EA25FFDEE300E40663 /* Networking */,
+				A39D02E925FFDECA00E40663 /* Views */,
 				A39D02C025FFD83900E40663 /* local_palApp.swift */,
 				A39D02C125FFD83900E40663 /* ContentView.swift */,
 				A39D02C225FFD83B00E40663 /* Assets.xcassets */,
@@ -88,6 +117,35 @@
 				A39D02D225FFD83B00E40663 /* macOS.entitlements */,
 			);
 			path = macOS;
+			sourceTree = "<group>";
+		};
+		A39D02E925FFDECA00E40663 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A39D02E325FFDB9D00E40663 /* MainMenu.swift */,
+				A39D02F725FFF1DC00E40663 /* FindRoom.swift */,
+				A39D02FC25FFFD7800E40663 /* Chat.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A39D02EA25FFDEE300E40663 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				A39D02EB25FFDEF100E40663 /* Service.swift */,
+				A39D02F225FFE4A900E40663 /* Connector.swift */,
+				A39D030125FFFDB000E40663 /* Communicator.swift */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		A39EFEFA2601190500E15EB9 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				A39EFEFB2601191500E15EB9 /* Message.swift */,
+				A39EFF0226011B2900E15EB9 /* Packet.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -188,7 +246,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				A39D02D525FFD83B00E40663 /* ContentView.swift in Sources */,
+				A39D02E425FFDB9D00E40663 /* MainMenu.swift in Sources */,
+				A39D02FD25FFFD7800E40663 /* Chat.swift in Sources */,
+				A39EFEFC2601191500E15EB9 /* Message.swift in Sources */,
+				A39D02EC25FFDEF100E40663 /* Service.swift in Sources */,
+				A39D02F325FFE4A900E40663 /* Connector.swift in Sources */,
 				A39D02D325FFD83B00E40663 /* local_palApp.swift in Sources */,
+				A39EFF0326011B2900E15EB9 /* Packet.swift in Sources */,
+				A39D030225FFFDB000E40663 /* Communicator.swift in Sources */,
+				A39D02F825FFF1DC00E40663 /* FindRoom.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -197,7 +263,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				A39D02D625FFD83B00E40663 /* ContentView.swift in Sources */,
+				A39D02E525FFDB9D00E40663 /* MainMenu.swift in Sources */,
+				A39D02FE25FFFD7800E40663 /* Chat.swift in Sources */,
+				A39EFEFD2601191500E15EB9 /* Message.swift in Sources */,
+				A39D02ED25FFDEF100E40663 /* Service.swift in Sources */,
+				A39D02F425FFE4A900E40663 /* Connector.swift in Sources */,
 				A39D02D425FFD83B00E40663 /* local_palApp.swift in Sources */,
+				A39EFF0426011B2900E15EB9 /* Packet.swift in Sources */,
+				A39D030325FFFDB000E40663 /* Communicator.swift in Sources */,
+				A39D02F925FFF1DC00E40663 /* FindRoom.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -365,7 +439,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = macOS/macOS.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "local-palDebug.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 9N65ASY7W2;
