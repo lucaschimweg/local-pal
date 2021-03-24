@@ -3,6 +3,7 @@ import MultipeerConnectivity
 
 protocol LocalPalCommunicatorDelegate {
     func receivedPacket(packet: Packet, from peerID: MCPeerID)
+    func connected()
 }
 
 class LocalPalCommunicator : NSObject, ObservableObject {
@@ -10,6 +11,7 @@ class LocalPalCommunicator : NSObject, ObservableObject {
     var service : LocalPalService?
     var myPeerId: MCPeerID?
     var delegate: LocalPalCommunicatorDelegate?
+    var loggedIn: Bool = false
     
     @Published var connected: Bool = false
     
@@ -20,6 +22,7 @@ class LocalPalCommunicator : NSObject, ObservableObject {
     }
     
     func create() {
+        self.loggedIn = true
         self.myPeerId = MCPeerID(displayName: UIDevice.current.name)
         session = MCSession(peer: self.myPeerId!, securityIdentity: nil, encryptionPreference: .required)
         session?.delegate = self
@@ -38,7 +41,16 @@ class LocalPalCommunicator : NSObject, ObservableObject {
         try broadcastPacket(packet: packet, exclude: nil)
     }
     
+    func sendPacket(packet: Packet, to peerID: MCPeerID) throws {
+        NSLog("%@", "Sending packet \(packet)")
+        if let sess = session {
+            let data = try JSONEncoder().encode(PacketContainer(pack: packet))
+            try sess.send(data, toPeers: [peerID], with: .reliable)
+        }
+    }
+    
     func broadcastPacket(packet: Packet, exclude excludedPeerID: MCPeerID?) throws {
+        NSLog("%@", "Broadcasting packet \(packet)")
         if let sess = session {
             var to = sess.connectedPeers
             if let peerId = excludedPeerID {
@@ -55,20 +67,12 @@ extension LocalPalCommunicator : MCSessionDelegate {
 
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
         NSLog("%@", "peer \(peerID) didChangeState: \(state.rawValue)")
-        DispatchQueue.main.async {
-            if state == MCSessionState.connected {
+        if state == MCSessionState.connected {
+            DispatchQueue.main.async {
                 self.connected = true
                 NSLog("%@", "Connected")
-                DispatchQueue.global().async {
-                    do {
-                        try self.broadcastPacket(packet: UserJoinPacket(user: User(name: "Duc", uuid: UUID.init())))
-                        try self.broadcastPacket(packet: PropagateConnectedUsersPacket())
-                        try self.broadcastPacket(packet: BroadcastMessagePacket(message: Message(from: User(name: "Duc", uuid: UUID.init()), text: "😏")))
-                    } catch let e {
-                        NSLog("%@", "error sending packet: \(e)")
-                    }
-                }
             }
+            self.delegate?.connected()
         }
     }
 

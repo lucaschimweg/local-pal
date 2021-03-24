@@ -9,18 +9,32 @@ protocol LocalPalRouterDelegate {
 
 class LocalPalRouter : LocalPalCommunicatorDelegate, ObservableObject {
     @Published var comm: LocalPalCommunicator
-    let ownUuid = UUID.init()
+    let ownUser = User(name: UIDevice.current.name, uuid: UUID())
     var userPeers: Dictionary<UUID, MCPeerID> = Dictionary()
+    var users: [User] = [User]()
     var delegate: LocalPalRouterDelegate?
     
     var anyCancellable: AnyCancellable? = nil
     
     init() {
+        users.append(ownUser)
+        
         comm = LocalPalCommunicator()
         comm.delegate = self
         
-        anyCancellable = self.comm.objectWillChange.sink { [weak self] (_) in
-            self?.objectWillChange.send()
+        anyCancellable = self.comm.objectWillChange.sink { [self] (_) in
+            self.objectWillChange.send()
+        }
+        
+        NSLog("%@", "Logged in! communicator.connected: \(self.comm.connected)  communicator.loggedIn: \(self.comm.loggedIn)")
+        if self.comm.connected && !self.comm.loggedIn {
+            
+            self.comm.loggedIn = true
+            do {
+                try self.comm.broadcastPacket(packet: UserJoinPacket(user: self.ownUser))
+            } catch let e {
+                NSLog("%@", "Error sending packet: \(e)")
+            }
         }
     }
     
@@ -48,6 +62,12 @@ class LocalPalRouter : LocalPalCommunicatorDelegate, ObservableObject {
         userPeers[packet.user.uuid] = peerID
         NSLog("[UserJoinPacket] %@", "set userPeers[\(packet.user.uuid)] = \(peerID)")
         delegate?.userJoin(user: packet.user)
+        
+        do {
+            try comm.sendPacket(packet: PropagateConnectedUsersPacket(users: users), to: peerID)
+        } catch let e {
+            NSLog("%@", "Error sending packet: \(e)")
+        }
     }
     
     private func receivedBroadcastMessagePacket(packet: BroadcastMessagePacket, from peerID: MCPeerID) {
@@ -57,6 +77,18 @@ class LocalPalRouter : LocalPalCommunicatorDelegate, ObservableObject {
             try comm.broadcastPacket(packet: packet, exclude: peerID)
         } catch let e {
             NSLog("%@", "Error sending packet: \(e)")
+        }
+    }
+    
+    func connected() {
+        if !comm.loggedIn {
+            do {
+                comm.loggedIn = true
+                try comm.broadcastPacket(packet: UserJoinPacket(user: ownUser))
+            } catch let e {
+                NSLog("%@", "Error sending packet: \(e)")
+                comm.loggedIn = false
+            }
         }
     }
 }

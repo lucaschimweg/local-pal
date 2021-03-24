@@ -64,8 +64,8 @@ protocol Packet : Codable {
 class PropagateConnectedUsersPacket : Packet {
     let users: [User]
     
-    init() {
-        users = []
+    init(users: [User]) {
+        self.users = users
     }
     
 }
