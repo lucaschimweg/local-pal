@@ -24,14 +24,15 @@ struct Chat: View {
                 ScrollView() {
                     ForEach(self.chatManager.messages) { messageView in
                         messageView
-                    }
-                }.frame(maxWidth: .infinity)
+                    }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing).padding()
+                }
                 Spacer()
                 HStack {
                     TextField("Type a message...", text: $chatInput)
                         .textFieldStyle(PlainTextFieldStyle())
                     Button("Send", action: {
                         print("Sending \(chatInput)")
+                        send()
                     })
                 }.padding()
             }
@@ -44,6 +45,15 @@ struct Chat: View {
             } else {
                 chatManager.router.comm.create()
             }
+        }
+    }
+    
+    func send() {
+        do {
+            try self.chatManager.sendBroadcastMessage(text: chatInput)
+            chatInput = ""
+        } catch let e {
+            NSLog("%@", "Error sending message: \(e)")
         }
     }
     

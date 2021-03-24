@@ -32,6 +32,7 @@ class LocalPalRouter : LocalPalCommunicatorDelegate, ObservableObject {
             self.comm.loggedIn = true
             do {
                 try self.comm.broadcastPacket(packet: UserJoinPacket(user: self.ownUser))
+                self.comm.create()
             } catch let e {
                 NSLog("%@", "Error sending packet: \(e)")
             }
@@ -78,6 +79,10 @@ class LocalPalRouter : LocalPalCommunicatorDelegate, ObservableObject {
         } catch let e {
             NSLog("%@", "Error sending packet: \(e)")
         }
+    }
+    
+    func sendBroadcastMessage(text: String) throws {
+        try self.comm.broadcastPacket(packet: BroadcastMessagePacket(message: Message(from: ownUser, text: text)))
     }
     
     func connected() {

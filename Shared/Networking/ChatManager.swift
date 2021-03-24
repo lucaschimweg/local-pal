@@ -21,6 +21,16 @@ class LocalPalChatManager : ObservableObject {
             self.messages.append(view)
         }
     }
+    
+    func sendBroadcastMessage(text: String) throws {
+        do {
+            try router.sendBroadcastMessage(text: text)
+            addMessageView(view: MessageView(broadcastFromYou: text))
+        } catch let e {
+            NSLog("%@", "Error sending packet: \(e)")
+        }
+    }
+    
 }
 
 extension LocalPalChatManager : LocalPalRouterDelegate {
