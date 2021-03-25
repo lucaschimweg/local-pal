@@ -39,9 +39,9 @@ class LocalPalConnector : NSObject, ObservableObject {
     }
     
     func connect(room: FoundRoom, comm: LocalPalCommunicator) {
-        comm.connect(peerId: myPeerId)
-        
-        self.serviceBrowser.invitePeer(room.peerID, to: comm.session!, withContext: nil, timeout: 10)
+        comm.myPeerId = myPeerId
+        let sess = comm.createSession(peerId: room.peerID)
+        self.serviceBrowser.invitePeer(room.peerID, to: sess, withContext: nil, timeout: 10)
     }
 }
 

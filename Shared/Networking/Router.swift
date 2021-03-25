@@ -65,6 +65,7 @@ class LocalPalRouter : LocalPalCommunicatorDelegate, ObservableObject {
         delegate?.userJoin(user: packet.user)
         
         do {
+            try comm.broadcastPacket(packet: packet, exclude: peerID)
             try comm.sendPacket(packet: PropagateConnectedUsersPacket(users: users), to: peerID)
         } catch let e {
             NSLog("%@", "Error sending packet: \(e)")

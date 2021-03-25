@@ -7,34 +7,30 @@ protocol LocalPalCommunicatorDelegate {
 }
 
 class LocalPalCommunicator : NSObject, ObservableObject {
-    var session : MCSession?
+    var sessions : Dictionary<MCPeerID, MCSession> = Dictionary()
     var service : LocalPalService?
-    var myPeerId: MCPeerID?
+    var myPeerId: MCPeerID =  MCPeerID(displayName: UIDevice.current.name)
     var delegate: LocalPalCommunicatorDelegate?
     var loggedIn: Bool = false
     
     @Published var connected: Bool = false
     
-    func connect(peerId: MCPeerID) {
-        self.myPeerId = peerId
-        session = MCSession(peer: peerId, securityIdentity: nil, encryptionPreference: .required)
-        session?.delegate = self
-    }
-    
     func create() {
         self.loggedIn = true
-        self.myPeerId = MCPeerID(displayName: UIDevice.current.name)
-        session = MCSession(peer: self.myPeerId!, securityIdentity: nil, encryptionPreference: .required)
-        session?.delegate = self
         
         startService()
         connected = true
     }
     
+    func createSession(peerId: MCPeerID) -> MCSession {
+        let session = MCSession(peer: myPeerId, securityIdentity: nil, encryptionPreference: .required)
+        session.delegate = self
+        sessions[peerId] = session
+        return session
+    }
+    
     private func startService() {
-        if let unwrapped = self.myPeerId {
-            self.service = LocalPalService(peerId: unwrapped, session: session!)
-        }
+        self.service = LocalPalService(peerId: myPeerId, sessionFactory: self.createSession)
     }
     
     func broadcastPacket(packet: Packet) throws {
@@ -43,22 +39,26 @@ class LocalPalCommunicator : NSObject, ObservableObject {
     
     func sendPacket(packet: Packet, to peerID: MCPeerID) throws {
         NSLog("%@", "Sending packet \(packet)")
-        if let sess = session {
+    
+        if let session = sessions[peerID] {
             let data = try JSONEncoder().encode(PacketContainer(pack: packet))
-            try sess.send(data, toPeers: [peerID], with: .reliable)
+            try session.send(data, toPeers: [peerID], with: .reliable)
+        } else {
+            NSLog("%@", "Did not find peer \(peerID)! Not sending packet")
         }
+        
     }
     
     func broadcastPacket(packet: Packet, exclude excludedPeerID: MCPeerID?) throws {
         NSLog("%@", "Broadcasting packet \(packet)")
-        if let sess = session {
-            var to = sess.connectedPeers
-            if let peerId = excludedPeerID {
-                to.removeAll { (p) -> Bool in p == peerId }
+        let data = try JSONEncoder().encode(PacketContainer(pack: packet))
+        
+        for peer in sessions {
+            if peer.key == excludedPeerID {
+               continue
             }
             
-            let data = try JSONEncoder().encode(PacketContainer(pack: packet))
-            try sess.send(data, toPeers: to, with: .reliable)
+            try peer.value.send(data, toPeers: [peer.key], with: .reliable)
         }
     }
 }

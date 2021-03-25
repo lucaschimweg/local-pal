@@ -10,14 +10,16 @@ import MultipeerConnectivity
 
 public let LocalPalServiceType = "local-pal"
 
+typealias SessionFactory = (MCPeerID) -> MCSession
+
 class LocalPalService : NSObject {
 
     private let serviceAdvertiser : MCNearbyServiceAdvertiser
-    var session : MCSession
+    var sessionFactory : SessionFactory
     
-    init(peerId: MCPeerID, session: MCSession) {
+    init(peerId: MCPeerID, sessionFactory: @escaping SessionFactory) {
         self.serviceAdvertiser = MCNearbyServiceAdvertiser(peer: peerId, discoveryInfo: nil, serviceType: LocalPalServiceType)
-        self.session = session
+        self.sessionFactory = sessionFactory
         
         super.init()
         
@@ -33,7 +35,8 @@ class LocalPalService : NSObject {
 extension LocalPalService : MCNearbyServiceAdvertiserDelegate {
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
         NSLog("%@", "didReceiveInvitationFromPeer \(peerID)")
-        invitationHandler(true, self.session)
+        let session = self.sessionFactory(peerID)
+        invitationHandler(true, session)
     }
     
     
