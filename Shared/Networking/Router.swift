@@ -25,18 +25,6 @@ class LocalPalRouter : LocalPalCommunicatorDelegate, ObservableObject {
         anyCancellable = self.comm.objectWillChange.sink { [self] (_) in
             self.objectWillChange.send()
         }
-        
-        NSLog("%@", "Logged in! communicator.connected: \(self.comm.connected)  communicator.loggedIn: \(self.comm.loggedIn)")
-        if self.comm.connected && !self.comm.loggedIn {
-            
-            self.comm.loggedIn = true
-            do {
-                try self.comm.broadcastPacket(packet: UserJoinPacket(user: self.ownUser))
-                self.comm.create()
-            } catch let e {
-                NSLog("%@", "Error sending packet: \(e)")
-            }
-        }
     }
     
     func receivedPacket(packet: Packet, from peerID: MCPeerID) {
@@ -91,6 +79,7 @@ class LocalPalRouter : LocalPalCommunicatorDelegate, ObservableObject {
             do {
                 comm.loggedIn = true
                 try comm.broadcastPacket(packet: UserJoinPacket(user: ownUser))
+                self.comm.create()
             } catch let e {
                 NSLog("%@", "Error sending packet: \(e)")
                 comm.loggedIn = false

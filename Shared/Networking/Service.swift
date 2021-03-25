@@ -25,6 +25,7 @@ class LocalPalService : NSObject {
         
         self.serviceAdvertiser.delegate = self
         self.serviceAdvertiser.startAdvertisingPeer()
+        NSLog("%@", "Advertising service")
     }
     
     deinit {
