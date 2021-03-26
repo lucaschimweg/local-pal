@@ -13,6 +13,8 @@ struct Chat: View {
     
     @StateObject var chatManager = LocalPalChatManager()
     @State private var chatInput: String = ""
+    @State private var recipient: String = "Global"
+    @State private var recipientPickerOpen: Bool = false
     
     
     var body: some View {
@@ -27,14 +29,39 @@ struct Chat: View {
                     }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing).padding()
                 }
                 Spacer()
-                HStack {
-                    TextField("Type a message...", text: $chatInput)
-                        .textFieldStyle(PlainTextFieldStyle())
-                    Button("Send", action: {
-                        print("Sending \(chatInput)")
-                        send()
+                VStack {
+                    HStack {
+                        Text("Recipient: ")
+                        Button(recipient, action: {
+                            recipientPickerOpen = true
+                        })
+                    }.frame(maxWidth: .infinity, alignment: .leading)
+
+                    HStack {
+                        TextField("Type a message...", text: $chatInput)
+                            .textFieldStyle(PlainTextFieldStyle())
+                        Button("Send", action: {
+                            print("Sending \(chatInput)")
+                            send()
+                        })
+                    }
+                }.padding().sheet(isPresented: $recipientPickerOpen) {
+                    VStack {
+                        Text("Choose recipient")
+                        Picker("Recipient", selection: $recipient) {
+                            Text("Global")
+                            Text("Duc")
+                            Text("Luca")
+                            Text("Duc")
+                            Text("Luca")
+                            Text("Duc")
+                            Text("Luca")
+                        }
+                    }
+                    Button("OK", action: {
+                        recipientPickerOpen = false
                     })
-                }.padding()
+                }
             }
         }
         .navigationTitle("Local Pal Chat")

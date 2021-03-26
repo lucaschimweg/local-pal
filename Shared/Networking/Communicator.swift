@@ -12,8 +12,11 @@ class LocalPalCommunicator : NSObject, ObservableObject {
     var myPeerId: MCPeerID =  MCPeerID(displayName: UIDevice.current.name)
     var delegate: LocalPalCommunicatorDelegate?
     var loggedIn: Bool = false
-    
     @Published var connected: Bool = false
+    
+    override init() {
+        super.init()
+    }
     
     func create() {
         self.loggedIn = true

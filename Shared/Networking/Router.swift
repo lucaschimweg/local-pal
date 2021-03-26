@@ -5,22 +5,30 @@ import Combine
 protocol LocalPalRouterDelegate {
     func userJoin(user: User)
     func receiveBroadcastMessage(message: Message)
+    func receivePrivateMessage(message: Message)
 }
 
 class LocalPalRouter : LocalPalCommunicatorDelegate, ObservableObject {
     @Published var comm: LocalPalCommunicator
-    let ownUser = User(name: UIDevice.current.name, uuid: UUID())
+    let ownUser : UserWithKey
     var userPeers: Dictionary<UUID, MCPeerID> = Dictionary()
-    var users: [User] = [User]()
+    var users: [UserWithKey] = [UserWithKey]()
     var delegate: LocalPalRouterDelegate?
+    var cryptoProvider: LocalPalCryptoProvider
+    
     
     var anyCancellable: AnyCancellable? = nil
     
     init() {
+        self.cryptoProvider = try! LocalPalCryptoProvider()
+        
+        let comm = LocalPalCommunicator()
+        self.comm = comm
+        
+        ownUser = UserWithKey(user: User(name: UIDevice.current.name, uuid: UUID()), publicKey: cryptoProvider.publicKeyRepr)
         users.append(ownUser)
         
-        comm = LocalPalCommunicator()
-        comm.delegate = self
+        self.comm.delegate = self
         
         anyCancellable = self.comm.objectWillChange.sink { [self] (_) in
             self.objectWillChange.send()
@@ -35,6 +43,8 @@ class LocalPalRouter : LocalPalCommunicatorDelegate, ObservableObject {
             receivedUserJoinPacket(packet: pack, from: peerID)
         case let pack as BroadcastMessagePacket:
             receivedBroadcastMessagePacket(packet: pack, from: peerID)
+        case let pack as PrivateMessagePacket:
+            receivePrivateMessagePacket(packet: pack, from: peerID)
         default:
             NSLog("Invalid packet!")
         }
@@ -42,15 +52,17 @@ class LocalPalRouter : LocalPalCommunicatorDelegate, ObservableObject {
     
     private func receivedPropagateConnectedUsersPacket(packet: PropagateConnectedUsersPacket, from peerID: MCPeerID) {
         for user in packet.users {
-            userPeers[user.uuid] = peerID
-            NSLog("[PropagateConnectedUsersPacket] %@", "set userPeers[\(user.uuid)] = \(peerID)")
+            userPeers[user.user.uuid] = peerID
+            cryptoProvider.registerUser(id: user.user.uuid, key: user.publicKey)
+            NSLog("[PropagateConnectedUsersPacket] %@", "set userPeers[\(user.user.uuid)] = \(peerID)")
         }
     }
     
     private func receivedUserJoinPacket(packet: UserJoinPacket, from peerID: MCPeerID) {
-        userPeers[packet.user.uuid] = peerID
-        NSLog("[UserJoinPacket] %@", "set userPeers[\(packet.user.uuid)] = \(peerID)")
-        delegate?.userJoin(user: packet.user)
+        userPeers[packet.user.user.uuid] = peerID
+        cryptoProvider.registerUser(id: packet.user.user.uuid, key: packet.user.publicKey)
+        NSLog("[UserJoinPacket] %@", "set userPeers[\(packet.user.user.uuid)] = \(peerID)")
+        delegate?.userJoin(user: packet.user.user)
         
         do {
             try comm.broadcastPacket(packet: packet, exclude: peerID)
@@ -70,8 +82,39 @@ class LocalPalRouter : LocalPalCommunicatorDelegate, ObservableObject {
         }
     }
     
+    private func receivePrivateMessagePacket(packet: PrivateMessagePacket, from peerId: MCPeerID) {
+        if packet.recipient != ownUser.user.uuid {
+            // Packet not for us
+            if let peerId = userPeers[packet.recipient] {
+                do {
+                    try self.comm.sendPacket(packet: packet, to: peerId)
+                } catch let e {
+                    NSLog("%@", "Error sending packet: \(e)")
+                }
+            }
+        } else {
+            // Packet for us
+            do {
+                let text = try cryptoProvider.decryptMessage(data: packet.message.text)
+                delegate?.receivePrivateMessage(message: Message(from: packet.message.from, text: text))
+            } catch let e {
+                NSLog("%@", "Error decrypting packet: \(e)")
+            }
+        }
+    }
+    
     func sendBroadcastMessage(text: String) throws {
-        try self.comm.broadcastPacket(packet: BroadcastMessagePacket(message: Message(from: ownUser, text: text)))
+        try self.comm.broadcastPacket(packet: BroadcastMessagePacket(message: Message(from: ownUser.user, text: text)))
+    }
+    
+    func sendPrivateMessage(to recipientUuid: UUID, text: String) throws {
+        let encrypted = try cryptoProvider.encryptMessage(to: recipientUuid, text: text)
+        
+        guard let peerId = userPeers[recipientUuid] else {
+            throw LocalPalError.unknownUser
+        }
+        
+        try self.comm.sendPacket(packet: PrivateMessagePacket(recipient: recipientUuid, message: PrivateMessage(from: ownUser.user, text: encrypted)), to: peerId)
     }
     
     func connected() {

@@ -11,6 +11,8 @@ enum PacketType : Int8 {
     case PropagateConnectedUsersPacket = 1
     case UserJoinPacket = 2
     case BroadcastMessagePacket = 3
+    case UserLeavePacket = 4
+    case PrivateMessagePacket = 5
 }
 
 struct PacketContainer : Codable {
@@ -34,6 +36,12 @@ struct PacketContainer : Codable {
         case let pack as BroadcastMessagePacket:
             try container.encode(PacketType.BroadcastMessagePacket.rawValue, forKey: .packetType)
             try container.encode(pack, forKey: .packet)
+        case let pack as UserLeavePacket:
+            try container.encode(PacketType.UserLeavePacket.rawValue, forKey: .packetType)
+            try container.encode(pack, forKey: .packet)
+        case let pack as PrivateMessagePacket:
+            try container.encode(PacketType.PrivateMessagePacket.rawValue, forKey: .packetType)
+            try container.encode(pack, forKey: .packet)
         default:
             NSLog("Invalid packet!")
         }
@@ -54,6 +62,10 @@ struct PacketContainer : Codable {
             packet = try container.decode(UserJoinPacket.self, forKey: .packet)
         case .BroadcastMessagePacket:
             packet = try container.decode(BroadcastMessagePacket.self, forKey: .packet)
+        case .UserLeavePacket:
+            packet = try container.decode(UserLeavePacket.self, forKey: .packet)
+        case .PrivateMessagePacket:
+            packet = try container.decode(PrivateMessagePacket.self, forKey: .packet)
         }
     }
 }
@@ -62,20 +74,34 @@ protocol Packet : Codable {
 }
 
 class PropagateConnectedUsersPacket : Packet {
-    let users: [User]
+    let users: [UserWithKey]
     
-    init(users: [User]) {
+    init(users: [UserWithKey]) {
         self.users = users
     }
     
 }
 
 struct UserJoinPacket : Packet {
+    let user: UserWithKey
+}
+
+struct UserWithKey : Codable {
     let user: User
+    let publicKey: Data
 }
 
 struct BroadcastMessagePacket : Packet {
     let message: Message
+}
+
+struct UserLeavePacket : Packet {
+    let users: [User]
+}
+
+struct PrivateMessagePacket : Packet {
+    let recipient: UUID
+    let message: PrivateMessage
 }
 
 struct User : Codable {

@@ -13,3 +13,7 @@ struct Message : Codable {
     let text: String
 }
 
+struct PrivateMessage : Codable {
+    let from: User
+    let text: Data
+}

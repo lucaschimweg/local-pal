@@ -11,6 +11,8 @@
 		A309AA7A260BBD6000F3C79D /* ChatManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A309AA78260BBD6000F3C79D /* ChatManager.swift */; };
 		A309AA7E260BBE8000F3C79D /* Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = A309AA7D260BBE8000F3C79D /* Messages.swift */; };
 		A309AA7F260BBE8000F3C79D /* Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = A309AA7D260BBE8000F3C79D /* Messages.swift */; };
+		A315E71B260DE15B002D2428 /* Crypto.swift in Sources */ = {isa = PBXBuildFile; fileRef = A315E71A260DE15B002D2428 /* Crypto.swift */; };
+		A315E71C260DE15B002D2428 /* Crypto.swift in Sources */ = {isa = PBXBuildFile; fileRef = A315E71A260DE15B002D2428 /* Crypto.swift */; };
 		A39D02D325FFD83B00E40663 /* local_palApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39D02C025FFD83900E40663 /* local_palApp.swift */; };
 		A39D02D425FFD83B00E40663 /* local_palApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39D02C025FFD83900E40663 /* local_palApp.swift */; };
 		A39D02D525FFD83B00E40663 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39D02C125FFD83900E40663 /* ContentView.swift */; };
@@ -40,6 +42,7 @@
 /* Begin PBXFileReference section */
 		A309AA78260BBD6000F3C79D /* ChatManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatManager.swift; sourceTree = "<group>"; };
 		A309AA7D260BBE8000F3C79D /* Messages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Messages.swift; sourceTree = "<group>"; };
+		A315E71A260DE15B002D2428 /* Crypto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Crypto.swift; sourceTree = "<group>"; };
 		A39D02C025FFD83900E40663 /* local_palApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = local_palApp.swift; sourceTree = "<group>"; };
 		A39D02C125FFD83900E40663 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A39D02C225FFD83B00E40663 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -142,6 +145,7 @@
 		A39D02EA25FFDEE300E40663 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
+				A315E71A260DE15B002D2428 /* Crypto.swift */,
 				A39D02EB25FFDEF100E40663 /* Service.swift */,
 				A39D02F225FFE4A900E40663 /* Connector.swift */,
 				A39D030125FFFDB000E40663 /* Communicator.swift */,
@@ -269,6 +273,7 @@
 				A39D02D325FFD83B00E40663 /* local_palApp.swift in Sources */,
 				A39EFF0326011B2900E15EB9 /* Packet.swift in Sources */,
 				A39D030225FFFDB000E40663 /* Communicator.swift in Sources */,
+				A315E71B260DE15B002D2428 /* Crypto.swift in Sources */,
 				A39D02F825FFF1DC00E40663 /* FindRoom.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -289,6 +294,7 @@
 				A39D02D425FFD83B00E40663 /* local_palApp.swift in Sources */,
 				A39EFF0426011B2900E15EB9 /* Packet.swift in Sources */,
 				A39D030325FFFDB000E40663 /* Communicator.swift in Sources */,
+				A315E71C260DE15B002D2428 /* Crypto.swift in Sources */,
 				A39D02F925FFF1DC00E40663 /* FindRoom.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

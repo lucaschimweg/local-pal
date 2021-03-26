@@ -9,8 +9,8 @@ import SwiftUI
 
 enum TextMessageType {
     case UserJoin
-    case BroadcastMessage
-    case BroadcastFromYou
+    case Message
+    case MessageFromYou
 }
 
 let OthersBubbleColor = Color("OthersBubbleColor")
@@ -22,28 +22,31 @@ struct MessageView : View, Identifiable {
     
     let user: User?
     let message: Message?
+    let isPrivate: Bool?
     let text: String?
     
     var body: some View {
         switch type {
-        case .BroadcastMessage:
-            broadcastMessageView
+        case .Message:
+            messageView
         case .UserJoin:
             userJoinView
-        case .BroadcastFromYou:
-            broadcastFromYouMessageView
+        case .MessageFromYou:
+            messageFromYouView
         }
     }
     
-    var broadcastFromYouMessageView: some View {
+    var messageFromYouView: some View {
         VStack {
-            Text(text!).padding().background(MyBubbleColor).clipShape(Capsule(style: .continuous))
+            Text((user != nil) ? "To \(user!.name): " : "" + text!)
+                .padding().background(MyBubbleColor).clipShape(Capsule(style: .continuous))
         }.frame(maxWidth: .infinity, alignment: .trailing)
     }
     
-    var broadcastMessageView: some View {
+    var messageView: some View {
         VStack {
-            Text("\(message!.from.name): \(message!.text)").padding().background(OthersBubbleColor).clipShape(Capsule(style: .continuous))
+            Text("\(message!.from.name)" + ((isPrivate!) ? " (private) " : "") + ": \(message!.text)")
+                .padding().background(OthersBubbleColor).clipShape(Capsule(style: .continuous))
         }.frame(maxWidth: .infinity, alignment: .leading)
     }
 
@@ -51,18 +54,20 @@ struct MessageView : View, Identifiable {
         Text("\(user!.name) joined the chat").frame(maxWidth: .infinity, alignment: .center)
     }
     
-    init(broadcast message: Message) {
-        self.type = .BroadcastMessage
+    init(received message: Message, isPrivate: Bool = false) {
+        self.type = .Message
         self.message = message
+        self.isPrivate = isPrivate
         self.text = nil
         self.user = nil
     }
     
-    init(broadcastFromYou messageText: String) {
-        self.type = .BroadcastFromYou
+    init(sent messageText: String, recipient: User? = nil) {
+        self.type = .MessageFromYou
         self.text = messageText
+        self.user = recipient
         self.message = nil
-        self.user = nil
+        self.isPrivate = nil
     }
     
     init (join user: User) {
@@ -70,5 +75,6 @@ struct MessageView : View, Identifiable {
         self.user = user
         self.message = nil
         self.text = nil
+        self.isPrivate = nil
     }
 }
