@@ -13,9 +13,10 @@ struct Chat: View {
     
     @StateObject var chatManager = LocalPalChatManager()
     @State private var chatInput: String = ""
-    @State private var recipient: String = "Global"
+    @State private var recipientIndex: Int = 0
     @State private var recipientPickerOpen: Bool = false
     
+    private let recipients = ["Global", "Duc", "Luca", "Fabi"]
     
     var body: some View {
         VStack {
@@ -32,7 +33,7 @@ struct Chat: View {
                 VStack {
                     HStack {
                         Text("Recipient: ")
-                        Button(recipient, action: {
+                        Button(recipients[recipientIndex], action: {
                             recipientPickerOpen = true
                         })
                     }.frame(maxWidth: .infinity, alignment: .leading)
@@ -47,20 +48,28 @@ struct Chat: View {
                     }
                 }.padding().sheet(isPresented: $recipientPickerOpen) {
                     VStack {
+                        Spacer()
                         Text("Choose recipient")
-                        Picker("Recipient", selection: $recipient) {
-                            Text("Global")
-                            Text("Duc")
-                            Text("Luca")
-                            Text("Duc")
-                            Text("Luca")
-                            Text("Duc")
-                            Text("Luca")
+                        Picker("Recipient", selection: $recipientIndex) {
+                            ForEach(0..<recipients.count) { index in
+                                Text(recipients[index])
+                            }
                         }
+                        
+                        Text(recipientIndex != 0 ? "\(recipients[recipientIndex])'s public key hash" : " ")
+                        Text(recipientIndex != 0 ? String(chatManager.router.cryptoProvider.publicKeyHash) : " ")
+                            .font(.system(.body, design: .monospaced))
+                    
+                        Button("OK", action: {
+                            recipientPickerOpen = false
+                        }).padding()
+                        
+                        Spacer()
+                        Text("Your public key hash")
+                        Text(String(chatManager.router.cryptoProvider.publicKeyHash)).font(.system(.body, design: .monospaced))
+                        
+
                     }
-                    Button("OK", action: {
-                        recipientPickerOpen = false
-                    })
                 }
             }
         }
@@ -96,3 +105,11 @@ struct Chat: View {
     }
 }
 
+extension View {
+    @ViewBuilder func hidden(_ shouldHide: Bool) -> some View {
+        switch shouldHide {
+        case true: self.hidden()
+        case false: self
+        }
+    }
+}

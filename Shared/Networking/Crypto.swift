@@ -15,6 +15,7 @@ enum LocalPalError : Error {
 class LocalPalCryptoProvider {
     let privateKey: SecKey
     let publicKeyRepr: Data
+    let publicKeyHash: Int
     var userKeys: Dictionary<UUID, SecKey> = Dictionary()
     
     init() throws {
@@ -35,6 +36,10 @@ class LocalPalCryptoProvider {
         guard let publicKey = pubKeyOpt else {
             throw LocalPalError.cryptoError
         }
+        
+        var hasher = Hasher()
+        publicKey.hash(into: &hasher)
+        publicKeyHash = hasher.finalize()
         
         guard let privateKey = privKeyOpt else {
             throw LocalPalError.cryptoError
@@ -91,5 +96,15 @@ class LocalPalCryptoProvider {
         }
         
         return decrypted
+    }
+    
+    func getPublicKeyHash(forUser userId: UUID) throws -> Int {
+        guard let pubKey = userKeys[userId] else {
+            throw LocalPalError.cryptoError
+        }
+        
+        var hasher = Hasher()
+        pubKey.hash(into: &hasher)
+        return hasher.finalize()
     }
 }
