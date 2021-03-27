@@ -31,6 +31,15 @@ class LocalPalChatManager : ObservableObject {
         }
     }
     
+    func sendPrivateMessage(to user: User, text: String) throws {
+        do {
+            try router.sendPrivateMessage(to: user.uuid, text: text)
+            addMessageView(view: MessageView(sent: text, recipient: user))
+        } catch let e {
+            NSLog("%@", "Error sending packet: \(e)")
+        }
+    }
+    
 }
 
 extension LocalPalChatManager : LocalPalRouterDelegate {

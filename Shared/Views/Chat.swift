@@ -51,8 +51,9 @@ struct Chat: View {
                         Spacer()
                         Text("Choose recipient")
                         Picker("Recipient", selection: $recipientIndex) {
-                            ForEach(0..<recipients.count) { index in
-                                Text(recipients[index])
+                            Text("Global").tag(0)
+                            ForEach(1..<chatManager.router.users.count) { index in // Starting from 1 because index 0 = ownUser
+                                Text(chatManager.router.users[index].user.name)
                             }
                         }
                         
@@ -67,8 +68,6 @@ struct Chat: View {
                         Spacer()
                         Text("Your public key hash")
                         Text(String(chatManager.router.cryptoProvider.publicKeyHash)).font(.system(.body, design: .monospaced))
-                        
-
                     }
                 }
             }
@@ -86,7 +85,12 @@ struct Chat: View {
     
     func send() {
         do {
-            try self.chatManager.sendBroadcastMessage(text: chatInput)
+            if recipientIndex == 0 {
+                try self.chatManager.sendBroadcastMessage(text: chatInput)
+            } else {
+                try self.chatManager.sendPrivateMessage(to: chatManager.router.users[recipientIndex].user, text: chatInput)
+            }
+            
             chatInput = ""
         } catch let e {
             NSLog("%@", "Error sending message: \(e)")
