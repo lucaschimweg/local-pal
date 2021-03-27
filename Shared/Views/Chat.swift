@@ -16,8 +16,6 @@ struct Chat: View {
     @State private var recipientIndex: Int = 0
     @State private var recipientPickerOpen: Bool = false
     
-    private let recipients = ["Global", "Duc", "Luca", "Fabi"]
-    
     var body: some View {
         VStack {
             if !chatManager.router.comm.connected {
@@ -33,7 +31,7 @@ struct Chat: View {
                 VStack {
                     HStack {
                         Text("Recipient: ")
-                        Button(recipients[recipientIndex], action: {
+                        Button(recipientName(recipientIndex: recipientIndex), action: {
                             recipientPickerOpen = true
                         })
                     }.frame(maxWidth: .infinity, alignment: .leading)
@@ -51,14 +49,15 @@ struct Chat: View {
                         Spacer()
                         Text("Choose recipient")
                         Picker("Recipient", selection: $recipientIndex) {
-                            Text("Global").tag(0)
-                            ForEach(1..<chatManager.router.users.count) { index in // Starting from 1 because index 0 = ownUser
-                                Text(chatManager.router.users[index].user.name)
+                            ForEach(0..<chatManager.router.users.count) { index in
+                                Text(recipientName(recipientIndex: index)) // 0 will become "Global"
                             }
                         }
                         
-                        Text(recipientIndex != 0 ? "\(recipients[recipientIndex])'s public key hash" : " ")
-                        Text(recipientIndex != 0 ? String(chatManager.router.cryptoProvider.publicKeyHash) : " ")
+                        Text(recipientIndex != 0 ? "\(recipientName(recipientIndex: recipientIndex))'s public key hash" : " ")
+                        Text((recipientIndex != 0) ?
+                                String(try! chatManager.router.cryptoProvider.getPublicKeyHash(forUser: chatManager.router.users[recipientIndex].user.uuid))
+                                : " ")
                             .font(.system(.body, design: .monospaced))
                     
                         Button("OK", action: {
@@ -81,6 +80,13 @@ struct Chat: View {
                 chatManager.router.comm.create()
             }
         }
+    }
+    
+    func recipientName(recipientIndex: Int) -> String {
+        if recipientIndex != 0 {
+            return chatManager.router.users[recipientIndex].user.name
+        }
+        return "Global"
     }
     
     func send() {
