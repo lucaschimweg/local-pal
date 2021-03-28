@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CryptoKit
 
 enum LocalPalError : Error {
     case cryptoError
@@ -15,7 +16,7 @@ enum LocalPalError : Error {
 class LocalPalCryptoProvider {
     let privateKey: SecKey
     let publicKeyRepr: Data
-    let publicKeyHash: Int
+    let publicKeyHash: String
     var userKeys: Dictionary<UUID, SecKey> = Dictionary()
     
     init() throws {
@@ -37,10 +38,6 @@ class LocalPalCryptoProvider {
             throw LocalPalError.cryptoError
         }
         
-        var hasher = Hasher()
-        publicKey.hash(into: &hasher)
-        publicKeyHash = hasher.finalize()
-        
         guard let privateKey = privKeyOpt else {
             throw LocalPalError.cryptoError
         }
@@ -52,6 +49,8 @@ class LocalPalCryptoProvider {
         }
         
         self.publicKeyRepr = cfdata as Data
+        
+        try self.publicKeyHash = LocalPalCryptoProvider.hashKey(key: publicKey)
     }
     
     func registerUser(id userId: UUID, key publicKeyRepr: Data) {
@@ -98,13 +97,21 @@ class LocalPalCryptoProvider {
         return decrypted
     }
     
-    func getPublicKeyHash(forUser userId: UUID) throws -> Int {
+    func getPublicKeyHash(forUser userId: UUID) throws -> String {
         guard let pubKey = userKeys[userId] else {
             throw LocalPalError.cryptoError
         }
         
-        var hasher = Hasher()
-        pubKey.hash(into: &hasher)
-        return hasher.finalize()
+        return try LocalPalCryptoProvider.hashKey(key: pubKey)
+    }
+    
+    private static func hashKey(key: SecKey) throws -> String {
+        var error:Unmanaged<CFError>?
+        guard let cfdata = SecKeyCopyExternalRepresentation(key, &error) else {
+            throw LocalPalError.cryptoError
+        }
+        
+        let hash = SHA256.hash(data: cfdata as Data)
+        return String(hash.description.suffix(16))
     }
 }

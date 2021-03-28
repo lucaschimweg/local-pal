@@ -56,7 +56,7 @@ struct Chat: View {
                         
                         Text(recipientIndex != 0 ? "\(recipientName(recipientIndex: recipientIndex))'s public key hash" : " ")
                         Text((recipientIndex != 0) ?
-                                String(try! chatManager.router.cryptoProvider.getPublicKeyHash(forUser: chatManager.router.users[recipientIndex].user.uuid))
+                                try! chatManager.router.cryptoProvider.getPublicKeyHash(forUser: chatManager.router.users[recipientIndex].user.uuid)
                                 : " ")
                             .font(.system(.body, design: .monospaced))
                     
@@ -66,7 +66,7 @@ struct Chat: View {
                         
                         Spacer()
                         Text("Your public key hash")
-                        Text(String(chatManager.router.cryptoProvider.publicKeyHash)).font(.system(.body, design: .monospaced))
+                        Text(chatManager.router.cryptoProvider.publicKeyHash).font(.system(.body, design: .monospaced))
                     }
                 }
             }

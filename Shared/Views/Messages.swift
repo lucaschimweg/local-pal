@@ -38,7 +38,7 @@ struct MessageView : View, Identifiable {
     
     var messageFromYouView: some View {
         VStack {
-            Text((user != nil) ? "To \(user!.name): " : "" + text!)
+            Text(((user != nil) ? "To \(user!.name): " : "") + text!)
                 .padding().background(MyBubbleColor).clipShape(Capsule(style: .continuous))
         }.frame(maxWidth: .infinity, alignment: .trailing)
     }

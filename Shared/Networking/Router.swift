@@ -53,6 +53,7 @@ class LocalPalRouter : LocalPalCommunicatorDelegate, ObservableObject {
     private func receivedPropagateConnectedUsersPacket(packet: PropagateConnectedUsersPacket, from peerID: MCPeerID) {
         for user in packet.users {
             userPeers[user.user.uuid] = peerID
+            users.append(user)
             cryptoProvider.registerUser(id: user.user.uuid, key: user.publicKey)
             NSLog("[PropagateConnectedUsersPacket] %@", "set userPeers[\(user.user.uuid)] = \(peerID)")
         }
@@ -70,6 +71,8 @@ class LocalPalRouter : LocalPalCommunicatorDelegate, ObservableObject {
         } catch let e {
             NSLog("%@", "Error sending packet: \(e)")
         }
+        
+        users.append(packet.user)
     }
     
     private func receivedBroadcastMessagePacket(packet: BroadcastMessagePacket, from peerID: MCPeerID) {
