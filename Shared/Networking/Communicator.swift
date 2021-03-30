@@ -4,10 +4,12 @@ import MultipeerConnectivity
 protocol LocalPalCommunicatorDelegate {
     func receivedPacket(packet: Packet, from peerID: MCPeerID)
     func connected()
+    func lostConnection(to peerId: MCPeerID)
 }
 
 class LocalPalCommunicator : NSObject, ObservableObject {
     var sessions : Dictionary<MCPeerID, MCSession> = Dictionary()
+    var connectedPeers: Set<MCPeerID> = Set()
     var service : LocalPalService?
     var myPeerId: MCPeerID =  MCPeerID(displayName: UIDevice.current.name)
     var delegate: LocalPalCommunicatorDelegate?
@@ -56,12 +58,16 @@ class LocalPalCommunicator : NSObject, ObservableObject {
         NSLog("%@", "Broadcasting packet \(packet)")
         let data = try JSONEncoder().encode(PacketContainer(pack: packet))
         
-        for peer in sessions {
-            if peer.key == excludedPeerID {
+        for peerID in connectedPeers {
+            if peerID == excludedPeerID {
                continue
             }
             
-            try peer.value.send(data, toPeers: [peer.key], with: .reliable)
+            guard let sess = sessions[peerID] else {
+                continue
+            }
+            
+            try sess.send(data, toPeers: [peerID], with: .reliable)
         }
     }
 }
@@ -71,11 +77,18 @@ extension LocalPalCommunicator : MCSessionDelegate {
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
         NSLog("%@", "peer \(peerID) didChangeState: \(state.rawValue)")
         if state == MCSessionState.connected {
+            connectedPeers.insert(peerID)
             DispatchQueue.main.async {
                 self.connected = true
                 NSLog("%@", "Connected")
             }
             self.delegate?.connected()
+        } else {
+            if connectedPeers.contains(peerID) {
+                connectedPeers.remove(peerID)
+                delegate?.lostConnection(to: peerID)
+                NSLog("%@", "Lost connection to \(peerID), session contains \(session.connectedPeers)")
+            }
         }
     }
 

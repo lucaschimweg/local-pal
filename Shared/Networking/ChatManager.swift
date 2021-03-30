@@ -43,6 +43,10 @@ class LocalPalChatManager : ObservableObject {
 }
 
 extension LocalPalChatManager : LocalPalRouterDelegate {
+    func usersLeft(users: [User]) {
+        addMessageView(view: MessageView(leave: users))
+    }
+    
     func receivePrivateMessage(message: Message) {
         addMessageView(view: MessageView(received: message, isPrivate: true))
     }

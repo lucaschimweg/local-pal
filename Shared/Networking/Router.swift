@@ -6,16 +6,16 @@ protocol LocalPalRouterDelegate {
     func userJoin(user: User)
     func receiveBroadcastMessage(message: Message)
     func receivePrivateMessage(message: Message)
+    func usersLeft(users: [User])
 }
 
 class LocalPalRouter : LocalPalCommunicatorDelegate, ObservableObject {
     @Published var comm: LocalPalCommunicator
     let ownUser : UserWithKey
     var userPeers: Dictionary<UUID, MCPeerID> = Dictionary()
-    var users: [UserWithKey] = [UserWithKey]()
+    @Published var users: [UserWithKey] = [UserWithKey]()
     var delegate: LocalPalRouterDelegate?
     var cryptoProvider: LocalPalCryptoProvider
-    
     
     var anyCancellable: AnyCancellable? = nil
     
@@ -45,6 +45,8 @@ class LocalPalRouter : LocalPalCommunicatorDelegate, ObservableObject {
             receivedBroadcastMessagePacket(packet: pack, from: peerID)
         case let pack as PrivateMessagePacket:
             receivePrivateMessagePacket(packet: pack, from: peerID)
+        case let pack as UserLeavePacket:
+            receiveUserLeavePacket(packet: pack, from: peerID)
         default:
             NSLog("Invalid packet!")
         }
@@ -66,8 +68,11 @@ class LocalPalRouter : LocalPalCommunicatorDelegate, ObservableObject {
         delegate?.userJoin(user: packet.user.user)
         
         do {
-            try comm.broadcastPacket(packet: packet, exclude: peerID)
-            try comm.sendPacket(packet: PropagateConnectedUsersPacket(users: users), to: peerID)
+            let pack = UserJoinPacket(user: packet.user, initial: false)
+            try comm.broadcastPacket(packet: pack, exclude: peerID)
+            if packet.initial {
+                try comm.sendPacket(packet: PropagateConnectedUsersPacket(users: users), to: peerID)
+            }
         } catch let e {
             NSLog("%@", "Error sending packet: \(e)")
         }
@@ -106,6 +111,29 @@ class LocalPalRouter : LocalPalCommunicatorDelegate, ObservableObject {
         }
     }
     
+    private func receiveUserLeavePacket(packet: UserLeavePacket, from peerID: MCPeerID) {
+        do {
+            try comm.broadcastPacket(packet: packet, exclude: peerID)
+        } catch let e {
+            NSLog("%@", "Error sending packet: \(e)")
+        }
+        
+        var lostUUIDs = Set<UUID>()
+        for user in packet.users {
+            lostUUIDs.insert(user.uuid)
+        }
+        
+        for uuid in lostUUIDs {
+            userPeers.removeValue(forKey: uuid)
+        }
+            
+        users.removeAll(where: { user in lostUUIDs.contains(user.user.uuid)} )
+        DispatchQueue.main.async {
+            self.objectWillChange.send()
+        }
+        cryptoProvider.usersLeave(users: packet.users)
+    }
+    
     func sendBroadcastMessage(text: String) throws {
         try self.comm.broadcastPacket(packet: BroadcastMessagePacket(message: Message(from: ownUser.user, text: text)))
     }
@@ -124,12 +152,48 @@ class LocalPalRouter : LocalPalCommunicatorDelegate, ObservableObject {
         if !comm.loggedIn {
             do {
                 comm.loggedIn = true
-                try comm.broadcastPacket(packet: UserJoinPacket(user: ownUser))
+                try comm.broadcastPacket(packet: UserJoinPacket(user: ownUser, initial: true))
                 self.comm.create()
             } catch let e {
                 NSLog("%@", "Error sending packet: \(e)")
                 comm.loggedIn = false
             }
+        }
+    }
+    
+    func lostConnection(to peerId: MCPeerID) {
+        do {
+            var lostUUIDs = Set<UUID>()
+            for entry in userPeers {
+                if entry.value == peerId {
+                    lostUUIDs.insert(entry.key)
+                }
+            }
+            
+            var lostUsers = [User]()
+            for user in users {
+                if lostUUIDs.contains(user.user.uuid) {
+                    lostUsers.append(user.user)
+                }
+            }
+            
+            for uuid in lostUUIDs {
+                userPeers.removeValue(forKey: uuid)
+            }
+            
+            users.removeAll(where: { user in lostUUIDs.contains(user.user.uuid)} )
+            DispatchQueue.main.async {
+                self.objectWillChange.send()
+            }
+            
+            cryptoProvider.usersLeave(users: lostUsers)
+            
+            try comm.broadcastPacket(packet: UserLeavePacket(users: lostUsers))
+            delegate?.usersLeft(users: lostUsers)
+            
+        } catch let e {
+            NSLog("%@", "Error processing connection loss: \(e)")
+            comm.loggedIn = false
         }
     }
 }

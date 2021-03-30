@@ -97,6 +97,12 @@ class LocalPalCryptoProvider {
         return decrypted
     }
     
+    func usersLeave(users: [User]) {
+        for user in users {
+            self.userKeys.removeValue(forKey: user.uuid)
+        }
+    }
+    
     func getPublicKeyHash(forUser userId: UUID) throws -> String {
         guard let pubKey = userKeys[userId] else {
             throw LocalPalError.cryptoError

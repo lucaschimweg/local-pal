@@ -79,10 +79,18 @@ struct Chat: View {
             } else {
                 chatManager.router.comm.create()
             }
-        }
+        }.onReceive(self.chatManager.router.$users, perform: { _ in
+            if self.recipientIndex > chatManager.router.users.count {
+                self.recipientIndex = 0
+            }
+        })
     }
     
     func recipientName(recipientIndex: Int) -> String {
+        if recipientIndex > chatManager.router.users.count {
+            self.recipientIndex = 0
+        }
+        
         if recipientIndex != 0 {
             return chatManager.router.users[recipientIndex].user.name
         }

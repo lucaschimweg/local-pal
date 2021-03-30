@@ -9,6 +9,7 @@ import SwiftUI
 
 enum TextMessageType {
     case UserJoin
+    case UserLeave
     case Message
     case MessageFromYou
 }
@@ -20,10 +21,11 @@ struct MessageView : View, Identifiable {
     let id = UUID()
     let type: TextMessageType
     
-    let user: User?
-    let message: Message?
-    let isPrivate: Bool?
-    let text: String?
+    var user: User? = nil
+    var users: [User]? = nil
+    var message: Message? = nil
+    var isPrivate: Bool? = nil
+    var text: String? = nil
     
     var body: some View {
         switch type {
@@ -31,6 +33,8 @@ struct MessageView : View, Identifiable {
             messageView
         case .UserJoin:
             userJoinView
+        case .UserLeave:
+            userLeaveView
         case .MessageFromYou:
             messageFromYouView
         }
@@ -51,30 +55,32 @@ struct MessageView : View, Identifiable {
     }
 
     var userJoinView: some View {
-        Text("\(user!.name) joined the chat").frame(maxWidth: .infinity, alignment: .center)
+        Text("\(user!.name) joined the chat").padding().frame(maxWidth: .infinity, alignment: .center)
+    }
+    
+    var userLeaveView: some View {
+        Text(users!.map({user in user.name}).joined(separator: ", ") + " left the chat").padding().frame(maxWidth: .infinity, alignment: .center)
     }
     
     init(received message: Message, isPrivate: Bool = false) {
         self.type = .Message
         self.message = message
         self.isPrivate = isPrivate
-        self.text = nil
-        self.user = nil
     }
     
     init(sent messageText: String, recipient: User? = nil) {
         self.type = .MessageFromYou
         self.text = messageText
         self.user = recipient
-        self.message = nil
-        self.isPrivate = nil
     }
     
-    init (join user: User) {
+    init(join user: User) {
         self.type = .UserJoin
         self.user = user
-        self.message = nil
-        self.text = nil
-        self.isPrivate = nil
+    }
+    
+    init(leave users: [User]) {
+        self.type = .UserLeave
+        self.users = users
     }
 }

@@ -84,9 +84,10 @@ class PropagateConnectedUsersPacket : Packet {
 
 struct UserJoinPacket : Packet {
     let user: UserWithKey
+    let initial: Bool
 }
 
-struct UserWithKey : Codable {
+struct UserWithKey : Codable, Hashable {
     let user: User
     let publicKey: Data
 }
@@ -104,7 +105,7 @@ struct PrivateMessagePacket : Packet {
     let message: PrivateMessage
 }
 
-struct User : Codable {
+struct User : Codable, Hashable {
     let name: String
     let uuid: UUID
 }
