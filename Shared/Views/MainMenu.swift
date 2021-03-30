@@ -15,7 +15,7 @@ struct MainMenu: View {
         NavigationView {
             VStack {
                 Spacer()
-                Text("Welcome to local-pal!")
+                Text("Welcome to Local Pal!")
                     .padding()
                 Spacer()
                 NavigationLink(destination: Chat()) {
