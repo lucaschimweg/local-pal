@@ -171,35 +171,6 @@
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "512x512"
-    },
-    {
-      "filename" : "Icon-83.5@2x.png",
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "filename" : "Icon-Small-50.png",
-      "idiom" : "universal",
-      "scale" : "1x",
-      "size" : "50x50"
-    },
-    {
-      "filename" : "Icon-Small-50@2x.png",
-      "idiom" : "universal",
-      "scale" : "2x",
-      "size" : "50x50"
-    },
-    {
-      "filename" : "Icon-72.png",
-      "idiom" : "universal",
-      "scale" : "1x",
-      "size" : "72x72"
-    },
-    {
-      "filename" : "Icon-72@2x.png",
-      "idiom" : "universal",
-      "scale" : "2x",
-      "size" : "72x72"
     }
   ],
   "info" : {
