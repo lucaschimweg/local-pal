@@ -132,6 +132,7 @@ class LocalPalRouter : LocalPalCommunicatorDelegate, ObservableObject {
             self.objectWillChange.send()
         }
         cryptoProvider.usersLeave(users: packet.users)
+        delegate?.usersLeft(users: packet.users)
     }
     
     func sendBroadcastMessage(text: String) throws {
